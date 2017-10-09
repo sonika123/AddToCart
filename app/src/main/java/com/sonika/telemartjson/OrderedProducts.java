@@ -1,24 +1,20 @@
 package com.sonika.telemartjson;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.sonika.telemartjson.Adapter.OrderedProductsAdapter;
-import com.sonika.telemartjson.Helper.MySharedPreference;
-import com.sonika.telemartjson.Pojo.AllProducts;
+import com.sonika.telemartjson.Adapter.OrderAdapter;
+;
 
-import org.w3c.dom.Text;
+import com.sonika.telemartjson.Helper.OrderHelper;
+import com.sonika.telemartjson.Pojo.OrderedProducts_pojo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,45 +22,81 @@ import java.util.List;
  */
 
 public class OrderedProducts extends AppCompatActivity {
-    RecyclerView orders_recyclerView;
-    List<AllProducts> allProductList = new ArrayList<AllProducts>();
-    //AllProducts allProducts = new AllProducts();
-
-
-
+    //RecyclerView orders_recyclerView;
+    ListView lv;
+    OrderHelper dbhelper;
+    OrderedProducts_pojo orderedProducts;
+    List<OrderedProducts_pojo> orderedProductsList = new ArrayList<>();
+    TextView totalAmount;
+    double total = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ordered_products);
-        for (int i = 0; i< allProductList.size(); i++) {
-            String name = allProductList.get(i).getName();
-            Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
-        }
+        lv = (ListView) findViewById(R.id.ordererd_productList);
+        dbhelper = new OrderHelper(OrderedProducts.this);
+        totalAmount = (TextView) findViewById(R.id.totalamount);
 
-        orders_recyclerView = (RecyclerView) findViewById(R.id.ordered_products);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(OrderedProducts.this);
-        orders_recyclerView.setLayoutManager(linearLayoutManager);
-        orders_recyclerView.setHasFixedSize(true);
-//adding to cart
-
-        MySharedPreference mShared = new MySharedPreference(OrderedProducts.this);
-
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        AllProducts[] addCartProducts = gson.fromJson(mShared.retrieveProductFromCart(), AllProducts[].class);
-        List<AllProducts> productList1 = convertObjectArrayToListObject(addCartProducts);
-
-        OrderedProductsAdapter mAdapter = new OrderedProductsAdapter(OrderedProducts.this,productList1);
-        orders_recyclerView.setAdapter(mAdapter);
-
-
+        totalAmount.setText("your total amount is " +total);
+        show();
 
     }
 
-    private List<AllProducts> convertObjectArrayToListObject(AllProducts[] allProducts){
-        final AllProducts allProductsa = (AllProducts) getIntent().getSerializableExtra("hello");
-        List<AllProducts> mProduct = new ArrayList<AllProducts>();
-        Collections.addAll(mProduct, allProductsa);
-        return mProduct;
-   }
+    private void show() {
+        final ArrayList<OrderedProducts_pojo> list = dbhelper.getOrderMessage();
+        for (int i = 0; i < list.size(); i++) {
+            final OrderedProducts_pojo info = list.get(i);
+            final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, R.layout.ordered_products_list, list);
+            lv.setAdapter(notifyAdapter);
+            lv.deferNotifyDataSetChanged();
+        }
+    }
+
+    private void getTotal(List<OrderedProducts_pojo> pojo) {
+        for (int i = 0; i < pojo.size(); i ++)
+        {
+           pojo.get(i);
+            total = Double.parseDouble(total + orderedProducts.getOrderedprice());
+            dbhelper = new OrderHelper(getApplicationContext());
+            dbhelper.add(String.valueOf(total));
+        }
+
+    }
 }
+//        orders_recyclerView = (RecyclerView) findViewById(R.id.or);
+//        //Toast.makeText(this, orderedProducts.getOrderedname(), Toast.LENGTH_SHORT).show();
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(OrderedProducts.this);
+//        orders_recyclerView.setLayoutManager(linearLayoutManager);
+//        orders_recyclerView.setHasFixedSize(true);
+//        OrderedProductsAdapter orderAdapter = new OrderedProductsAdapter
+//                (getApplicationContext(), orderedProductsList);
+//        orders_recyclerView.setAdapter(orderAdapter);
+
+
+
+
+      //  Toast.makeText(this, allProducts.getName(), Toast.LENGTH_SHORT).show();
+
+//adding to cart
+
+//        MySharedPreference mShared = new MySharedPreference(OrderedProducts_pojo.this);
+//
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson gson = builder.create();
+//        AllProducts[] addCartProducts = gson.fromJson(mShared.retrieveProductFromCart(), AllProducts[].class);
+//        List<AllProducts> productList = convertObjectArrayToListObject(addCartProducts);
+
+//        OrderedProductsAdapter mAdapter = new OrderedProductsAdapter(getApplicationContext(), productList);
+//        orders_recyclerView.setAdapter(mAdapter);
+//    }
+//
+//    private List<AllProducts> convertObjectArrayToListObject(AllProducts[] allProducts){
+//       // final AllProducts allProductsa = (AllProducts) getIntent().getSerializableExtra("hello");
+//        //List<AllProducts> mProduct = new ArrayList<AllProducts>();
+//        AllProducts mProduct =(AllProducts) getIntent().getSerializableExtra("hello");
+//        allProductList.add(mProduct);
+//        Collections.addAll(allProductList, allProducts);
+//        return allProductList;
+//   }
+//}
