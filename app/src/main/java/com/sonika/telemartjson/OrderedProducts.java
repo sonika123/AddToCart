@@ -36,8 +36,7 @@ public class OrderedProducts extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.ordererd_productList);
         dbhelper = new OrderHelper(OrderedProducts.this);
         totalAmount = (TextView) findViewById(R.id.totalamount);
-
-        totalAmount.setText("your total amount is " +total);
+        total = getTotal(orderedProductsList);
         show();
 
     }
@@ -52,7 +51,7 @@ public class OrderedProducts extends AppCompatActivity {
         }
     }
 
-    private void getTotal(List<OrderedProducts_pojo> pojo) {
+    private double getTotal(List<OrderedProducts_pojo> pojo) {
         for (int i = 0; i < pojo.size(); i ++)
         {
            pojo.get(i);
@@ -61,6 +60,7 @@ public class OrderedProducts extends AppCompatActivity {
             dbhelper.add(String.valueOf(total));
         }
 
+        return 0;
     }
 }
 //        orders_recyclerView = (RecyclerView) findViewById(R.id.or);
