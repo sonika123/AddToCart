@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,21 +26,32 @@ import java.util.List;
  * Created by sonika on 5/9/2017.
  */
 
-public class OrderAdapter extends ArrayAdapter<OrderedProducts_pojo> {
+public class OrderAdapter extends BaseAdapter{
     Context context;
     List<OrderedProducts_pojo> objects = new ArrayList<OrderedProducts_pojo>();
     OrderedProducts_pojo pojo;
     int resource;
     OrderHelper dbHelper;
-    String oid, oprice, oname;
 
-
-    public OrderAdapter(Context context, int resource, List<OrderedProducts_pojo> objects) {
-        super(context, resource, objects);
-        Log.e("adapter", "done");
+    public OrderAdapter(Context context, List<OrderedProducts_pojo> objects, int resource) {
         this.context = context;
         this.objects = objects;
         this.resource = resource;
+    }
+
+    @Override
+    public int getCount() {
+        return objects.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return i;
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
@@ -56,35 +68,34 @@ public class OrderAdapter extends ArrayAdapter<OrderedProducts_pojo> {
             holder.price= row.findViewById(R.id.ordered_productprice);
             holder.btnRemove = row.findViewById(R.id.btn_remove);
             row.setTag(holder);
+
         }
         else
         {
             holder = (ViewHolder) row.getTag();
         }
-        final OrderedProducts_pojo orderInfo = objects.get(position);
+        OrderedProducts_pojo orderInfo = objects.get(position);
         dbHelper = new OrderHelper(context);
 
-        holder.orderid.setText(orderInfo.getOrderid().toString());
+        //holder.orderid.setText(orderInfo.getOrderid().toString());
+
+        holder.orderid.setText(orderInfo.getOrderid()+" ");
         holder.name.setText("Name:"+" "+orderInfo.getOrderedname());
         holder.price.setText("Price:" + " "+orderInfo.getOrderedprice());
 
 
 
-        oprice = orderInfo.getOrderedprice();
-        ContentValues cv = new ContentValues();
-        cv.put("price", oprice);
 
         holder.btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //dbHelper.delete(orderInfo.getOrderid().toString(), null, null);
+                dbHelper.delete(objects.get(position).getOrderid()
+                        .toString(), null, null);
                 Toast.makeText(context, "removed", Toast.LENGTH_SHORT).show();
+
             }
         });
-
-        //holder.total.setText("Total");
-
-
-
         return row;
     }
 

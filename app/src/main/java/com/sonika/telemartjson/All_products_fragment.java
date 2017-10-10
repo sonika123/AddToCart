@@ -2,6 +2,10 @@ package com.sonika.telemartjson;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,12 +14,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sonika.telemartjson.Adapter.AllProductAdapter;
 
+import com.sonika.telemartjson.Helper.MySharedPreference;
 import com.sonika.telemartjson.Parser.JsonParserA;
 import com.sonika.telemartjson.Pojo.AllProducts;
 
@@ -32,12 +41,16 @@ public class All_products_fragment extends Fragment {
     int flag = 0;
     RecyclerView mRecyclerView;
     List<AllProducts> allProductList = new ArrayList<AllProducts>();
+    MySharedPreference sharedPreference;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_all_products, container, false);
+        sharedPreference = new MySharedPreference(getContext());
+        setHasOptionsMenu(true);
         perform(v);
         return v;
     }
@@ -231,6 +244,7 @@ public class All_products_fragment extends Fragment {
                             AllProducts allProducts =
                                     new AllProducts(id,total_sales,download_limit,download_expiry, shipping_class_id,rating_count, parent_id,c_id,i_id,i_position,menu_order,m_id,tag_id,m_key,m_value,price,name,slug,permalink,date_created,date_created_gmt,date_modified,date_modified_gmt,type,status,weight,catalog_visibility,description,short_description,sku,regular_price,sale_price,price_html,external_url,button_text,tag_id,tax_status,tax_class,backorders,length,width,height,shipping_class,purchase_note,average_rating,c_name,c_slug,i_date_created,i_date_created_gmt,i_date_modified,i_date_modified_gmt,i_src,i_name,i_alt,self_href,collection_href,tag_name,tag_slug,downloads,related_ids,upsell_ids,cross_sell_ids,tags,attributes,default_attributes,variations,grouped_products,featured,date_on_sale_from,date_on_sale_from_gmt,date_on_sale_to,date_on_sale_to_gmt,on_sale,purchasable,virtual,downloadable,manage_stock,stock_quantity,in_stock,backorders_allowed,backordered,sold_individually,shipping_required,shipping_taxable,reviews_allowed);
                             allProductList.add(allProducts);
+
                             flag = 2;
                         }
                     }
@@ -271,4 +285,53 @@ public class All_products_fragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.e("menuvitra", "cart");
+
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem menuItem = menu.findItem(R.id.action_shop);
+        int mCount = sharedPreference.retrieveProductCount();
+        menu.clear();
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+
+        if (id == R.id.action_shop)
+        {
+            Intent checkoutIntent = new Intent(getContext(), OrderedProducts.class);
+            startActivity(checkoutIntent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(R.layout.cart, null);
+        view.setBackgroundResource(backgroundImageId);
+
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+            counterTextPanel.setVisibility(View.GONE);
+        } else {
+            TextView textView = (TextView) view.findViewById(R.id.count);
+            textView.setText("" + count);
+        }
+
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+
+        return new BitmapDrawable(getResources(), bitmap);
+    }
 }

@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/direction_card_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_marginBottom="1dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     card_view:cardElevation="3dp"
+    card_view:cardCornerRadius="1dp"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -21,7 +22,7 @@
         <ImageView
             android:id="@+id/all_product_image"
             android:layout_width="300dp"
-            android:layout_height="100dp"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
             android:src="@drawable/facebook" />
@@ -36,6 +37,17 @@
             android:textColor="#000000"
             android:textSize="12dp"
             android:textStyle="bold" />
+             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to cart"
+            android:id="@+id/addToCart"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View More"
+            android:id="@+id/viewMore"/>
 
     </LinearLayout>
 

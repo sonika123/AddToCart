@@ -1,11 +1,13 @@
 package com.sonika.telemartjson;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,9 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sonika.telemartjson.Helper.MySharedPreference;
+import com.sonika.telemartjson.Helper.OrderHelper;
 import com.sonika.telemartjson.Pojo.AllProducts;
+import com.sonika.telemartjson.Pojo.OrderedProducts_pojo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,11 +34,14 @@ public class DetailsActivity extends AppCompatActivity {
     TextView textView_name_details, textView_desc_details, textView_price_details;
     private MySharedPreference sharedPreference;
     Gson gson;
+    OrderedProducts_pojo pojo;
     private int cartProductNumber = 0;
-    @Override
+    OrderHelper dbHelper;
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        dbHelper = new OrderHelper(DetailsActivity.this);
         sharedPreference = new MySharedPreference(DetailsActivity.this);
         GsonBuilder builder = new GsonBuilder();
         gson = builder.create();
@@ -47,14 +54,20 @@ public class DetailsActivity extends AppCompatActivity {
         textView_name_details = (TextView) findViewById(R.id.txt_name);
         textView_desc_details = (TextView) findViewById(R.id.txt_desc);
         textView_price_details = (TextView) findViewById(R.id.txt_price);
-        addToCart = (Button) findViewById(R.id.buttonCart);
+        // addToCart = (Button) findViewById(R.id.buttonCart);
 
         Glide.with(DetailsActivity.this).load(allProducts.getI_src()).into(imageview_details);
         textView_desc_details.setText(allProducts.getDescription());
         textView_price_details.setText(allProducts.getPrice());
         textView_name_details.setText(allProducts.getName());
 
-       addToCart.setOnClickListener(new View.OnClickListener() {
+
+
+
+
+
+
+      /* addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //increase product count
@@ -85,55 +98,59 @@ public class DetailsActivity extends AppCompatActivity {
         Collections.addAll(mProduct, allProducts);
         return mProduct;
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_shop);
-        int mCount = sharedPreference.retrieveProductCount();
-        menuItem.setIcon(buildCounterDrawable(mCount, R.drawable.cart));
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_shop) {
-            Intent checkoutIntent = new Intent(DetailsActivity.this, OrderedProducts.class);
-            startActivity(checkoutIntent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.cart, null);
-        view.setBackgroundResource(backgroundImageId);
-
-        if (count == 0) {
-            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
-            counterTextPanel.setVisibility(View.GONE);
-        } else {
-            TextView textView = (TextView) view.findViewById(R.id.count);
-            textView.setText("" + count);
-        }
-
-        view.measure(
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-
-        view.setDrawingCacheEnabled(true);
-        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false);
-
-        return new BitmapDrawable(getResources(), bitmap);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        MenuItem menuItem = menu.findItem(R.id.action_shop);
+//        int mCount = sharedPreference.retrieveProductCount();
+//        menuItem.setIcon(buildCounterDrawable(mCount, R.drawable.cart));
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        final int id = item.getItemId();
+//
+//        if (id == R.id.action_shop)
+//        {
+//            Intent checkoutIntent = new Intent(DetailsActivity.this, OrderedProducts.class);
+//            startActivity(checkoutIntent);
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        View view = inflater.inflate(R.layout.cart, null);
+//        view.setBackgroundResource(backgroundImageId);
+//
+//        if (count == 0) {
+//            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+//            counterTextPanel.setVisibility(View.GONE);
+//        } else {
+//            TextView textView = (TextView) view.findViewById(R.id.count);
+//            textView.setText("" + count);
+//        }
+//
+//        view.measure(
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+//
+//        view.setDrawingCacheEnabled(true);
+//        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+//        view.setDrawingCacheEnabled(false);
+//
+//        return new BitmapDrawable(getResources(), bitmap);
+//    }
     private void invalidateCart() {
         invalidateOptionsMenu();
     }
 }
 
-
+*/
+    }
+}

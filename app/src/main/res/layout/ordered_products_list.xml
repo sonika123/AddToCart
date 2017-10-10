@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:weightSum="2"
     android:padding="10dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/ordered_productid"
+        android:layout_height="wrap_content"
+        android:text="Product Id"
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,6 +24,12 @@
         android:id="@+id/ordered_productprice"
         android:text="Product Price"
         android:layout_weight="1"/>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove"
+        android:id="@+id/btn_remove"/>
 
 </LinearLayout>
+
+

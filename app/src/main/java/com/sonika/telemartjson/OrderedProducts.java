@@ -1,12 +1,15 @@
 package com.sonika.telemartjson;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sonika.telemartjson.Adapter.OrderAdapter;
 ;
@@ -28,40 +31,39 @@ public class OrderedProducts extends AppCompatActivity {
     OrderedProducts_pojo orderedProducts;
     List<OrderedProducts_pojo> orderedProductsList = new ArrayList<>();
     TextView totalAmount;
-    double total = 0;
+    String total = "1";
+    String oprice;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ordered_products);
         lv = (ListView) findViewById(R.id.ordererd_productList);
-        dbhelper = new OrderHelper(OrderedProducts.this);
+
         totalAmount = (TextView) findViewById(R.id.totalamount);
-        total = getTotal(orderedProductsList);
+        setTitle("Total Amount");
+        dbhelper = new OrderHelper(OrderedProducts.this);
+        Cursor Distance = dbhelper.GetTotal();
+
+        String result = "";
+
+        // get column value
+        if (Distance.moveToNext())
+            result = String.valueOf(Distance.getDouble(Distance.getColumnIndex("myTotal")));
+
+        totalAmount.setText("Your total bill amount is" +result);
         show();
-
     }
-
     private void show() {
         final ArrayList<OrderedProducts_pojo> list = dbhelper.getOrderMessage();
         for (int i = 0; i < list.size(); i++) {
             final OrderedProducts_pojo info = list.get(i);
-            final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, R.layout.ordered_products_list, list);
+            final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, list,R.layout.ordered_products_list);
             lv.setAdapter(notifyAdapter);
             lv.deferNotifyDataSetChanged();
         }
     }
 
-    private double getTotal(List<OrderedProducts_pojo> pojo) {
-        for (int i = 0; i < pojo.size(); i ++)
-        {
-           pojo.get(i);
-            total = Double.parseDouble(total + orderedProducts.getOrderedprice());
-            dbhelper = new OrderHelper(getApplicationContext());
-            dbhelper.add(String.valueOf(total));
-        }
-
-        return 0;
-    }
 }
 //        orders_recyclerView = (RecyclerView) findViewById(R.id.or);
 //        //Toast.makeText(this, orderedProducts.getOrderedname(), Toast.LENGTH_SHORT).show();

@@ -21,7 +21,7 @@ public class OrderHelper extends SQLiteOpenHelper {
 
 
     String ORDER_TABLE = "CREATE TABLE if not exists `user_order`  (\n" +
-            "                       `id` INTEGER PRIMARY KEY,\n" +
+            "                       `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "                       `name` TEXT,\n" +
             "                       `price` TEXT\n" +
             "                      );";
@@ -39,7 +39,8 @@ public class OrderHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + ORDER_TABLE);
+        onCreate(getWritableDatabase());
     }
 
     public void insertOrderInfo(ContentValues cv) {
@@ -62,19 +63,25 @@ public class OrderHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public void delete(Integer id) {
-        getWritableDatabase().delete("user_order", "id = ?" +id, new String[] { String.valueOf(id) });
-        Log.e("deletinsqlite", "ghijklmnop");
+//    public void delete(String id, Object name, Object amount) {
+//        getWritableDatabase().delete("user_order", "id = ?" +id, new String[] { String.valueOf(id) });
+//        Log.e("deletinsqlite", "ghijklmnop");
+//    }
+    public void delete(String id, Object name, Object amount) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("delete from user_order where id=" + id);
+            db.close();
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
     }
 
-    public void deleteNotif(int _id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("user_order", "id=" + _id, null);
-    }
-
-    public void add(String price)
-    {
-        getWritableDatabase().execSQL("Select sum(price) from user_order");
-    }
+public Cursor GetTotal() {
+    SQLiteDatabase db = this.getWritableDatabase();
+    Cursor GetTotal = db.rawQuery("SELECT Sum(price) AS myTotal FROM  user_order", null);
+    return GetTotal;
+}
 
 }

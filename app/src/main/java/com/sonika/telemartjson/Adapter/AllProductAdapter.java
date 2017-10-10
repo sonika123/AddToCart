@@ -76,6 +76,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductHolder> {
                 oname = allProductList.get(position).getName();
                 oprice = allProductList.get(position).getPrice();
                 ContentValues contentValues = new ContentValues();
+
                 contentValues.put("name" , oname);
                 contentValues.put("price" , oprice);
                 dbHelper.insertOrderInfo(contentValues);
