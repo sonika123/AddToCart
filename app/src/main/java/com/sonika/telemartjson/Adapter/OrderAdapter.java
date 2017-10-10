@@ -79,7 +79,7 @@ public class OrderAdapter extends BaseAdapter{
 
         //holder.orderid.setText(orderInfo.getOrderid().toString());
 
-        holder.orderid.setText(orderInfo.getOrderid()+" ");
+        holder.orderid.setText(position + 1 +" ");
         holder.name.setText("Name:"+" "+orderInfo.getOrderedname());
         holder.price.setText("Price:" + " "+orderInfo.getOrderedprice());
 
@@ -93,9 +93,12 @@ public class OrderAdapter extends BaseAdapter{
                 dbHelper.delete(objects.get(position).getOrderid()
                         .toString(), null, null);
                 Toast.makeText(context, "removed", Toast.LENGTH_SHORT).show();
+                objects.remove(position);
+                notifyDataSetChanged();
 
             }
         });
+
         return row;
     }
 

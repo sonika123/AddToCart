@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -31,8 +32,7 @@ public class OrderedProducts extends AppCompatActivity {
     OrderedProducts_pojo orderedProducts;
     List<OrderedProducts_pojo> orderedProductsList = new ArrayList<>();
     TextView totalAmount;
-    String total = "1";
-    String oprice;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +43,9 @@ public class OrderedProducts extends AppCompatActivity {
         totalAmount = (TextView) findViewById(R.id.totalamount);
         setTitle("Total Amount");
         dbhelper = new OrderHelper(OrderedProducts.this);
+
         Cursor Distance = dbhelper.GetTotal();
+
 
         String result = "";
 
@@ -51,7 +53,11 @@ public class OrderedProducts extends AppCompatActivity {
         if (Distance.moveToNext())
             result = String.valueOf(Distance.getDouble(Distance.getColumnIndex("myTotal")));
 
-        totalAmount.setText("Your total bill amount is" +result);
+
+
+        totalAmount.setText("Your total bill amount is " +result);
+
+
         show();
     }
     private void show() {
@@ -61,6 +67,8 @@ public class OrderedProducts extends AppCompatActivity {
             final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, list,R.layout.ordered_products_list);
             lv.setAdapter(notifyAdapter);
             lv.deferNotifyDataSetChanged();
+
+
         }
     }
 

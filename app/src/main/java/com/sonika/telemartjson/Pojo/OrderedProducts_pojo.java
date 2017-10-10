@@ -6,7 +6,7 @@ package com.sonika.telemartjson.Pojo;
 
 public class OrderedProducts_pojo {
     public String orderedname, orderedprice;
-    public static Integer orderid;
+    public  Integer orderid;
 
     public OrderedProducts_pojo() {
     }
