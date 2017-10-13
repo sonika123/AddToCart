@@ -20,26 +20,24 @@ public class OrderHelper extends SQLiteOpenHelper {
     static String DATABASE_NAME = "user_order";
 
 
-    String ORDER_TABLE = "CREATE TABLE if not exists `user_order`  (\n" +
-            "                       `id` INTEGER PRIMARY KEY ,\n" +
-            "                       `name` TEXT,\n" +
-            "                       `price` TEXT\n" +
-            "                      );";
-
     public OrderHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        getWritableDatabase().execSQL(ORDER_TABLE);
-    }
 
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        String ORDER_TABLE = "CREATE TABLE if not exists `user_order`  (\n" +
+                "                       `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "                       `name` TEXT,\n" +
+                "                       `price` TEXT\n" +
+                "                      );";
+        getWritableDatabase().execSQL(ORDER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + ORDER_TABLE);
+        getWritableDatabase().execSQL("DROP TABLE IF EXISTS user_order");
         onCreate(getWritableDatabase());
     }
 
@@ -78,10 +76,11 @@ public class OrderHelper extends SQLiteOpenHelper {
         }
     }
 
-public Cursor GetTotal() {
+    public Cursor GetTotal()
+    {
     SQLiteDatabase db = this.getWritableDatabase();
     Cursor GetTotal = db.rawQuery("SELECT Sum(price) AS myTotal FROM  user_order", null);
     return GetTotal;
-}
+    }
 
-}
+    }

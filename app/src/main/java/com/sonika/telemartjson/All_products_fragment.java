@@ -286,14 +286,13 @@ public class All_products_fragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         Log.e("menuvitra", "cart");
-
-        super.onCreateOptionsMenu(menu, inflater);
+        menuInflater.inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_shop);
         int mCount = sharedPreference.retrieveProductCount();
-        menu.clear();
-        inflater.inflate(R.menu.menu_main, menu);
+        menuItem.setIcon(buildCounterDrawable(mCount, R.drawable.cart));
+
     }
 
     @Override

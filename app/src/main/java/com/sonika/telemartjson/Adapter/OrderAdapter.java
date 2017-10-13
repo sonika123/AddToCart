@@ -1,14 +1,12 @@
 package com.sonika.telemartjson.Adapter;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,22 +20,29 @@ import com.sonika.telemartjson.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.id.list;
+
 /**
  * Created by sonika on 5/9/2017.
  */
 
 public class OrderAdapter extends BaseAdapter{
+
+
     Context context;
     List<OrderedProducts_pojo> objects = new ArrayList<OrderedProducts_pojo>();
     OrderedProducts_pojo pojo;
+    OrderedProducts orderedProducts;
     int resource;
     OrderHelper dbHelper;
 
-    public OrderAdapter(Context context, List<OrderedProducts_pojo> objects, int resource) {
-        this.context = context;
+
+    public OrderAdapter(Context contexta, List<OrderedProducts_pojo> objects, int resource) {
+        this.context= contexta;
         this.objects = objects;
         this.resource = resource;
     }
+
 
     @Override
     public int getCount() {
@@ -56,7 +61,9 @@ public class OrderAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
+        dbHelper = new OrderHelper(context);
         View row = convertView;
+
         ViewHolder holder = null;
         if(row == null)
         {
@@ -74,18 +81,14 @@ public class OrderAdapter extends BaseAdapter{
         {
             holder = (ViewHolder) row.getTag();
         }
-        OrderedProducts_pojo orderInfo = objects.get(position);
-        dbHelper = new OrderHelper(context);
+        final OrderedProducts_pojo orderInfo = objects.get(position);
+
 
         //holder.orderid.setText(orderInfo.getOrderid().toString());
 
         holder.orderid.setText(position + 1 +" ");
         holder.name.setText("Name:"+" "+orderInfo.getOrderedname());
         holder.price.setText("Price:" + " "+orderInfo.getOrderedprice());
-
-
-
-
         holder.btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,24 +97,17 @@ public class OrderAdapter extends BaseAdapter{
                         .toString(), null, null);
                 Toast.makeText(context, "removed", Toast.LENGTH_SHORT).show();
                 objects.remove(position);
-                notifyDataSetChanged();
+                //Log.e("object11", String.valueOf(objects.size()));
 
+                orderedProducts =  new OrderedProducts();
+                orderedProducts.getMyTotal();
+                notifyDataSetChanged();
             }
         });
-
         return row;
     }
-
-
-
-
     static class ViewHolder {
         TextView name, price, orderid;
         Button btnRemove;
     }
 }
-
-
-
-
-

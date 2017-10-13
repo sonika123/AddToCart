@@ -33,7 +33,6 @@ public class MySharedPreference {
     }
 
     public int retrieveProductCount(){
-       return prefs.getInt
-               (Constants.PRODUCT_COUNT, 0);
+       return prefs.getInt(Constants.PRODUCT_COUNT, 0);
     }
 }

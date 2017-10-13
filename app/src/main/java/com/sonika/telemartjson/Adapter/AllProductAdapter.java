@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.R.id.list;
+
 /**
  * Created by sonika on 9/19/2017.
  */
@@ -80,6 +82,8 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductHolder> {
                 contentValues.put("name" , oname);
                 contentValues.put("price" , oprice);
                 dbHelper.insertOrderInfo(contentValues);
+
+
             }
         });
 

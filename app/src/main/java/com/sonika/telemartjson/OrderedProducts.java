@@ -1,6 +1,7 @@
 package com.sonika.telemartjson;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,47 +33,52 @@ public class OrderedProducts extends AppCompatActivity {
     OrderedProducts_pojo orderedProducts;
     List<OrderedProducts_pojo> orderedProductsList = new ArrayList<>();
     TextView totalAmount;
-
+    Context mcontext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ordered_products);
         lv = (ListView) findViewById(R.id.ordererd_productList);
-
         totalAmount = (TextView) findViewById(R.id.totalamount);
-        setTitle("Total Amount");
-        dbhelper = new OrderHelper(OrderedProducts.this);
-
-        Cursor Distance = dbhelper.GetTotal();
-
-
-        String result = "";
-
-        // get column value
-        if (Distance.moveToNext())
-            result = String.valueOf(Distance.getDouble(Distance.getColumnIndex("myTotal")));
-
-
-
-        totalAmount.setText("Your total bill amount is " +result);
-
-
+        mcontext = this.getApplicationContext();
+        getMyTotal();
         show();
     }
-    private void show() {
+
+    public void show() {
         final ArrayList<OrderedProducts_pojo> list = dbhelper.getOrderMessage();
         for (int i = 0; i < list.size(); i++) {
             final OrderedProducts_pojo info = list.get(i);
-            final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, list,R.layout.ordered_products_list);
+            final OrderAdapter notifyAdapter = new OrderAdapter(OrderedProducts.this, list, R.layout.ordered_products_list);
             lv.setAdapter(notifyAdapter);
             lv.deferNotifyDataSetChanged();
-
-
         }
     }
 
+    public void getMyTotal() {
+
+        dbhelper = new OrderHelper(OrderedProducts.this);
+        OrderAdapter adapter = new OrderAdapter(mcontext, orderedProductsList, R.layout.ordered_products_list);
+
+        Cursor Distance = dbhelper.GetTotal();
+        adapter.getItem(Distance.getColumnIndex("myTotal"));
+
+        adapter.notifyDataSetChanged();
+
+        String result = "";
+
+
+        // get column value
+        while (Distance.moveToNext()) {
+            result = String.valueOf(Distance.getDouble(Distance.getColumnIndex("myTotal")));
+            totalAmount.setText("Your total bill amount is " + result);
+        }
+
+    }
+
 }
+
 //        orders_recyclerView = (RecyclerView) findViewById(R.id.or);
 //        //Toast.makeText(this, orderedProducts.getOrderedname(), Toast.LENGTH_SHORT).show();
 //
